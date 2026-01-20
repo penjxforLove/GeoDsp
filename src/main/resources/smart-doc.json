@@ -1,0 +1,13 @@
+{
+  "serverUrl": "http://localhost:8080/geo",
+  "projectName": "GeoDsp API文档",
+  "apiVersion": "1.0.0",
+  "packageFilters": "com.geo.dsp.module.*.controller",
+  "outPath": "target/doc",
+  "allInOne": true,
+  "createDebugPage": true,
+  "style": "xt256",
+  "showAuthor": true,
+  "showReturnExample": true,
+  "isStrict": false
+}
