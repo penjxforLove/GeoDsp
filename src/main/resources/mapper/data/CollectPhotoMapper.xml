@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.data.mapper.CollectPhotoMapper">
+    <resultMap id="CollectPhotoResultMap" type="com.geo.dsp.module.data.entity.CollectPhoto">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="data_id" property="dataId"/>
+        <result column="photo_name" property="photoName"/>
+        <result column="photo_data" property="photoData"/>
+        <result column="upload_time" property="uploadTime"/>
+        <result column="upload_by" property="uploadBy"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO collect_photo (
+            uuid, data_id, photo_name, photo_data, upload_time, upload_by, is_del
+        ) VALUES (
+                     #{uuid}, #{dataId}, #{photoName}, #{photoData}, #{uploadTime}, #{uploadBy}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="CollectPhotoResultMap">
+        SELECT * FROM collect_photo WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listByDataUuid" resultMap="CollectPhotoResultMap">
+        SELECT cp.* FROM collect_photo cp
+                             LEFT JOIN data_sample ds ON cp.data_id = ds.id
+        WHERE ds.uuid = #{dataUuid} AND cp.is_del = false
+        ORDER BY cp.upload_time DESC
+    </select>
+
+    <update id="updateNoteByUuid">
+        UPDATE collect_photo SET note = #{note}, upload_time = NOW()
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="batchDeleteByDataUuid">
+        UPDATE collect_photo SET is_del = true, upload_time = NOW()
+        WHERE data_id IN (
+            SELECT id FROM data_sample WHERE uuid = #{dataUuid} AND is_del = false
+        )
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE collect_photo SET is_del = true, upload_time = NOW()
+        WHERE uuid = #{uuid}
+    </update>
+</mapper>
