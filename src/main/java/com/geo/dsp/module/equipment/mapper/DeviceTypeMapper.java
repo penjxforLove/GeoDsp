@@ -1,4 +1,7 @@
 package com.geo.dsp.module.equipment.mapper;
 
-public interface DeviceTypeMapper {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.geo.dsp.module.equipment.entity.DeviceType;
+
+public interface DeviceTypeMapper extends BaseMapper<DeviceType> {
 }

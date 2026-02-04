@@ -45,24 +45,4 @@ public class UserVO {
      */
     private LocalDateTime createTime;
 
-    public void setUpdateTime(LocalDateTime updateTime) {
-    }
-
-    public Throwable getUsername() {
-        return null;
-    }
-    public void setUsername(String username) {
-    }
-    public void setRealName(String realName) {
-    }
-    public void setEmail(String email) {
-    }
-    public void setPhone(String phone) {
-    }
-    public void setStatus(Integer status) {
-    }
-    public void setCreateTime(LocalDateTime createTime) {
-    }
-    public void setId(Long id) {
-    }
 }

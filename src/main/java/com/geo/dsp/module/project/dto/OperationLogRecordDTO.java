@@ -1,4 +1,4 @@
 package com.geo.dsp.module.project.dto;
 
-public class TaskAuditDTO {
+public class OperationLogRecordDTO {
 }
