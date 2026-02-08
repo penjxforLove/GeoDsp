@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.project.mapper.OperateMethodMapper">
+    <resultMap id="OperateMethodResultMap" type="com.geo.dsp.module.data.entity.OperateMethod">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="method_name" property="methodName"/>
+        <result column="method_desc" property="methodDesc"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO operate_method (
+            uuid, method_name, method_desc, create_by, create_time, update_by,
+            update_time, note, is_del
+        ) VALUES (
+                     #{uuid}, #{methodName}, #{methodDesc}, #{createBy}, #{createTime}, #{updateBy},
+                     #{updateTime}, #{note}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="OperateMethodResultMap">
+        SELECT * FROM operate_method WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listAll" resultMap="OperateMethodResultMap">
+        SELECT * FROM operate_method WHERE is_del = false
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByName" resultMap="OperateMethodResultMap">
+        SELECT * FROM operate_method WHERE method_name = #{methodName} AND is_del = false
+    </select>
+
+    <update id="updateByUuid">
+        UPDATE operate_method
+        <set>
+            <if test="methodName != null">method_name = #{methodName},</if>
+            <if test="methodDesc != null">method_desc = #{methodDesc},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE operate_method SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid}
+    </update>
+</mapper>

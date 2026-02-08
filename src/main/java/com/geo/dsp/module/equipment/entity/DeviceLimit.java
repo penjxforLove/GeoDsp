@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 /**
  * 设备使用限制表实体
- * 对应表：geo_dsp_device_limit
+ * 对应表：device_limit
  */
 @Data
-@TableName("geo_dsp_device_limit")
+@TableName("device_limit")
 public class DeviceLimit {
 
     @TableId(type = IdType.AUTO)

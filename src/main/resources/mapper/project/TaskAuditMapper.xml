@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.project.mapper.TaskAuditMapper">
+    <resultMap id="TaskAuditResultMap" type="com.geo.dsp.module.data.entity.TaskAudit">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="task_id" property="taskId"/>
+        <result column="simple_id" property="simpleId"/>
+        <result column="auditor_id" property="auditorId"/>
+        <result column="audit_time" property="auditTime"/>
+        <result column="audit_result" property="auditResult"/>
+        <result column="audit_opinion" property="auditOpinion"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO task_audit (
+            uuid, task_id, simple_id, auditor_id, audit_time, audit_result,
+            audit_opinion, create_by, create_time, is_del
+        ) VALUES (
+                     #{uuid}, #{taskId}, #{simpleId}, #{auditorId}, #{auditTime}, #{auditResult},
+                     #{auditOpinion}, #{createBy}, #{createTime}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="TaskAuditResultMap">
+        SELECT * FROM task_audit WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listByTaskUuid" resultMap="TaskAuditResultMap">
+        SELECT ta.* FROM task_audit ta
+                             LEFT JOIN collect_task ct ON ta.task_id = ct.id
+        WHERE ct.uuid = #{taskUuid} AND ta.is_del = false
+        ORDER BY ta.audit_time DESC
+    </select>
+
+    <select id="listByAuditorUuid" resultMap="TaskAuditResultMap">
+        SELECT ta.* FROM task_audit ta
+                             LEFT JOIN users u ON ta.auditor_id = u.id
+        WHERE u.uuid = #{auditorUuid} AND ta.is_del = false
+        ORDER BY ta.audit_time DESC
+    </select>
+
+    <update id="updateAuditResultByUuid">
+        UPDATE task_audit
+        SET audit_result = #{auditResult}, audit_opinion = #{auditOpinion}, audit_time = NOW()
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE task_audit SET is_del = true WHERE uuid = #{uuid}
+    </update>
+</mapper>

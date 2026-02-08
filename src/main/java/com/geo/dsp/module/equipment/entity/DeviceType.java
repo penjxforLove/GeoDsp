@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 /**
  * 设备类型表实体
- * 对应表：geo_dsp_device_type
+ * 对应表：device_type
  */
 @Data
-@TableName("geo_dsp_device_type")
+@TableName("device_type")
 public class DeviceType {
 
     @TableId(type = IdType.AUTO)

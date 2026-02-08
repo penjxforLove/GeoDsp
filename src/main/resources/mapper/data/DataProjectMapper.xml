@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geodsp.module.data.mapper.DataProjectMapper">
+    <resultMap id="DataProjectResultMap" type="com.geodsp.module.data.entity.DataProject">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="project_id" property="projectId"/>
+        <result column="task_id" property="taskId"/>
+        <result column="engineering_name" property="engineeringName"/>
+        <result column="work_config" property="workConfig"/>
+        <result column="lineno_start" property="linenoStart"/>
+        <result column="lineno_step" property="linenoStep"/>
+        <result column="pointno_start" property="pointnoStart"/>
+        <result column="pointno_step" property="pointnoStep"/>
+        <result column="sendcoil_len" property="sendcoilLen"/>
+        <result column="sendcoil_width" property="sendcoilWidth"/>
+        <result column="sendcoil_turns" property="sendcoilTurns"/>
+        <result column="recvcoil_size" property="recvcoilSize"/>
+        <result column="recvcoil_gain" property="recvcoilGain"/>
+        <result column="offtime" property="offtime"/>
+        <result column="pointlen_d" property="pointlenD"/>
+        <result column="pointlen_r" property="pointlenR"/>
+        <result column="createtime" property="createtime"/>
+        <result column="calibrateno" property="calibrateno"/>
+        <result column="ssid" property="ssid"/>
+        <result column="device_num" property="deviceNum"/>
+        <result column="antenna_num" property="antennaNum"/>
+        <result column="operator_id" property="operatorId"/>
+        <result column="control_params" property="controlParams"/>
+        <result column="status" property="status"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="DataProjectResultMap">
+        SELECT * FROM data_project WHERE id = #{id} AND is_del = false
+    </select>
+
+    <select id="listByProjectId" resultMap="DataProjectResultMap">
+        SELECT * FROM data_project WHERE project_id = #{projectId} AND is_del = false ORDER BY create_time DESC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO data_project (
+            uuid, project_id, task_id, engineering_name, work_config, lineno_start, lineno_step,
+            pointno_start, pointno_step, sendcoil_len, sendcoil_width, sendcoil_turns, recvcoil_size,
+            recvcoil_gain, offtime, pointlen_d, pointlen_r, createtime, calibrateno, ssid, device_num,
+            antenna_num, operator_id, control_params, status, create_by, create_time, update_by, update_time, note, is_del
+        ) VALUES (
+                     #{uuid}, #{projectId}, #{taskId}, #{engineeringName}, #{workConfig}, #{linenoStart}, #{linenoStep},
+                     #{pointnoStart}, #{pointnoStep}, #{sendcoilLen}, #{sendcoilWidth}, #{sendcoilTurns}, #{recvcoilSize},
+                     #{recvcoilGain}, #{offtime}, #{pointlenD}, #{pointlenR}, #{createtime}, #{calibrateno}, #{ssid}, #{deviceNum},
+                     #{antennaNum}, #{operatorId}, #{controlParams}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{note}, #{isDel}
+                 )
+    </insert>
+
+    <update id="update">
+        UPDATE data_project
+        <set>
+            <if test="engineeringName != null">engineering_name = #{engineeringName},</if>
+            <if test="workConfig != null">work_config = #{workConfig},</if>
+            <if test="controlParams != null">control_params = #{controlParams},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE id = #{id} AND is_del = false
+    </update>
+
+    <update id="updateStatus">
+        UPDATE data_project SET status = #{status}, update_time = NOW() WHERE id = #{id} AND is_del = false
+    </update>
+
+    <update id="deleteById">
+        UPDATE data_project SET is_del = true, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <select id="selectByUuid" resultMap="DataProjectResultMap">
+        SELECT * FROM data_project WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <update id="updateStatusByUuid">
+        UPDATE data_project SET status = #{status}, update_time = NOW() WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE data_project SET is_del = true, update_time = NOW() WHERE uuid = #{uuid}
+    </update>
+
+    <select id="listByProjectUuid" resultMap="DataProjectResultMap">
+        SELECT dp.* FROM data_project dp
+                             LEFT JOIN project p ON dp.project_id = p.id
+        WHERE p.uuid = #{projectUuid} AND dp.is_del = false
+        ORDER BY dp.create_time DESC
+    </select>
+</mapper>

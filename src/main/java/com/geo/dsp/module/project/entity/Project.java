@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 /**
  * 项目表实体
- * 对应表：geo_dsp_project
+ * 对应表：project
  */
 @Data
-@TableName("geo_dsp_project")
+@TableName("project")
 public class Project {
 
     @TableId(type = IdType.AUTO)

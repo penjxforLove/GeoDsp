@@ -1,12 +1,12 @@
 package com.geo.dsp.module.user.controller;
 
 import com.geo.dsp.common.result.Result;
+import com.geo.dsp.module.user.entity.User;
 import com.geo.dsp.module.user.vo.UserVO;
 import com.geo.dsp.module.user.service.UserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.geo.dsp.module.user.dto.UserDTO;
-import com.geo.dsp.module.user.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

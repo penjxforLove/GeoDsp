@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.project.mapper.ProjectMapper">
+    <resultMap id="ProjectResultMap" type="com.geo.dsp.module.data.entity.Project">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="company_id" property="companyId"/>
+        <result column="project_name" property="projectName"/>
+        <result column="start_time" property="startTime"/>
+        <result column="expect_end_time" property="expectEndTime"/>
+        <result column="actual_end_time" property="actualEndTime"/>
+        <result column="status" property="status"/>
+        <result column="need_audit" property="needAudit"/>
+        <result column="principal_id" property="principalId"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO project (
+            uuid, company_id, project_name, start_time, expect_end_time, actual_end_time,
+            status, need_audit, principal_id, create_by, create_time, update_by,
+            update_time, note, is_del
+        ) VALUES (
+                     #{uuid}, #{companyId}, #{projectName}, #{startTime}, #{expectEndTime}, #{actualEndTime},
+                     #{status}, #{needAudit}, #{principalId}, #{createBy}, #{createTime}, #{updateBy},
+                     #{updateTime}, #{note}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="ProjectResultMap">
+        SELECT * FROM project WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listByCompanyUuid" resultMap="ProjectResultMap">
+        SELECT p.* FROM project p
+                            LEFT JOIN companies c ON p.company_id = c.id
+        WHERE c.uuid = #{companyUuid} AND p.is_del = false
+        ORDER BY p.create_time DESC
+    </select>
+
+    <select id="listByStatus" resultMap="ProjectResultMap">
+        SELECT * FROM project WHERE status = #{status} AND is_del = false
+        ORDER BY create_time DESC
+    </select>
+
+    <update id="updateByUuid">
+        UPDATE project
+        <set>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="expectEndTime != null">expect_end_time = #{expectEndTime},</if>
+            <if test="actualEndTime != null">actual_end_time = #{actualEndTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="needAudit != null">need_audit = #{needAudit},</if>
+            <if test="principalId != null">principal_id = #{principalId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="updateStatusByUuid">
+        UPDATE project SET status = #{status}, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE project SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid}
+    </update>
+</mapper>

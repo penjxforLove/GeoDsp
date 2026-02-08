@@ -1,5 +1,6 @@
 package com.geo.dsp.module.project.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.geo.dsp.module.project.entity.CollectTask;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +12,7 @@ import java.util.List;
  * 表说明：具体的采集任务单，关联项目和作业方法
  */
 @Mapper
-public interface CollectTaskMapper {
+public interface CollectTaskMapper extends BaseMapper<CollectTask> {
     /**
      * 根据UUID查询采集任务
      * @param uuid 采集任务UUID

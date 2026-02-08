@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.project.mapper.CollectTaskMapper">
+    <resultMap id="CollectTaskResultMap" type="com.geo.dsp.module.data.entity.CollectTask">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="project_id" property="projectId"/>
+        <result column="method_id" property="methodId"/>
+        <result column="task_name" property="taskName"/>
+        <result column="start_time" property="startTime"/>
+        <result column="expect_end_time" property="expectEndTime"/>
+        <result column="actual_en_time" property="actualEnTime"/>
+        <result column="operator_id" property="operatorId"/>
+        <result column="status" property="status"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO collect_task (
+            uuid, project_id, method_id, task_name, start_time, expect_end_time,
+            actual_en_time, operator_id, status, create_by, create_time, update_by,
+            update_time, note, is_del
+        ) VALUES (
+                     #{uuid}, #{projectId}, #{methodId}, #{taskName}, #{startTime}, #{expectEndTime},
+                     #{actualEnTime}, #{operatorId}, #{status}, #{createBy}, #{createTime}, #{updateBy},
+                     #{updateTime}, #{note}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="CollectTaskResultMap">
+        SELECT * FROM collect_task WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listByProjectUuid" resultMap="CollectTaskResultMap">
+        SELECT ct.* FROM collect_task ct
+                             LEFT JOIN project p ON ct.project_id = p.id
+        WHERE p.uuid = #{projectUuid} AND ct.is_del = false
+        ORDER BY ct.start_time ASC
+    </select>
+
+    <select id="listByOperatorUuid" resultMap="CollectTaskResultMap">
+        SELECT ct.* FROM collect_task ct
+                             LEFT JOIN users u ON ct.operator_id = u.id
+        WHERE u.uuid = #{operatorUuid} AND ct.is_del = false
+        ORDER BY ct.start_time ASC
+    </select>
+
+    <update id="updateByUuid">
+        UPDATE collect_task
+        <set>
+            <if test="methodId != null">method_id = #{methodId},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="expectEndTime != null">expect_end_time = #{expectEndTime},</if>
+            <if test="actualEnTime != null">actual_en_time = #{actualEnTime},</if>
+            <if test="operatorId != null">operator_id = #{operatorId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="updateStatusByUuid">
+        UPDATE collect_task SET status = #{status}, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE collect_task SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid}
+    </update>
+</mapper>

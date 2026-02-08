@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.data.mapper.DataSampleMapper">
+    <resultMap id="DataSampleResultMap" type="com.geo.dsp.module.data.entity.DataSample">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="use" property="use"/>
+        <result column="task_id" property="taskId"/>
+        <result column="data_point_id" property="dataPointId"/>
+        <result column="starttime" property="starttime"/>
+        <result column="devicetype" property="devicetype"/>
+        <result column="type" property="type"/>
+        <result column="period" property="period"/>
+        <result column="data_recv" property="dataRecv"/>
+        <result column="data_recv_pos" property="dataRecvPos"/>
+        <result column="data_recv_len" property="dataRecvLen"/>
+        <result column="data_send" property="dataSend"/>
+        <result column="data_soff" property="dataSoff"/>
+        <result column="sendfs" property="sendfs"/>
+        <result column="samplesendfs" property="samplesendfs"/>
+        <result column="sampleofffs" property="sampleofffs"/>
+        <result column="recvfs" property="recvfs"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO data_sample (
+            uuid, use, task_id, data_pointid, starttime, devicetype, type, period,
+            data_recv, data_recv_pos, data_recv_len, data_send, data_soff, sendfs,
+            samplesendfs, sampleofffs, recvfs, create_time, update_by, update_time, note, is_del
+        ) VALUES (
+                     #{uuid}, #{use}, #{taskId}, #{dataPointId}, #{starttime}, #{devicetype}, #{type}, #{period},
+                     #{dataRecv}, #{dataRecvPos}, #{dataRecvLen}, #{dataSend}, #{dataSoff}, #{sendfs},
+                     #{samplesendfs}, #{sampleofffs}, #{recvfs}, #{createTime}, #{updateBy}, #{updateTime}, #{note}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="DataSampleResultMap">
+        SELECT * FROM data_sample WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listByDataPointUuid" resultMap="DataSampleResultMap">
+        SELECT ds.* FROM data_sample ds
+                             LEFT JOIN data_point dp ON ds.data_pointid = dp.id
+        WHERE dp.uuid = #{dataPointUuid} AND ds.is_del = false
+        ORDER BY ds.create_time DESC
+    </select>
+
+    <select id="listByTaskUuid" resultMap="DataSampleResultMap">
+        SELECT ds.* FROM data_sample ds
+                             LEFT JOIN collect_task ct ON ds.task_id = ct.id
+        WHERE ct.uuid = #{taskUuid} AND ds.is_del = false
+        ORDER BY ds.create_time DESC
+    </select>
+
+    <update id="updateByUuid">
+        UPDATE data_sample
+        <set>
+            <if test="use != null">use = #{use},</if>
+            <if test="period != null">period = #{period},</if>
+            <if test="sendfs != null">sendfs = #{sendfs},</if>
+            <if test="recvfs != null">recvfs = #{recvfs},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="batchDeleteByDataPointUuid">
+        UPDATE data_sample SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE data_pointid IN (
+            SELECT id FROM data_point WHERE uuid = #{dataPointUuid} AND is_del = false
+        )
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE data_sample SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid}
+    </update>
+</mapper>

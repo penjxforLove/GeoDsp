@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geo.dsp.module.data.mapper.DataPointMapper">
+    <resultMap id="DataPointResultMap" type="com.geo.dsp.module.data.entity.DataPoint">
+        <id column="id" property="id"/>
+        <result column="uuid" property="uuid"/>
+        <result column="use" property="use"/>
+        <result column="name" property="name"/>
+        <result column="data_lineid" property="dataLineid"/>
+        <result column="list_data_sample" property="listDataSample"/>
+        <result column="type" property="type"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="note" property="note"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO data_point (
+            uuid, use, name, data_lineid, list_data_sample, type, create_time,
+            update_by, update_time, note, is_del
+        ) VALUES (
+                     #{uuid}, #{use}, #{name}, #{dataLineid}, #{listDataSample}, #{type}, #{createTime},
+                     #{updateBy}, #{updateTime}, #{note}, #{isDel}
+                 )
+    </insert>
+
+    <select id="selectByUuid" resultMap="DataPointResultMap">
+        SELECT * FROM data_point WHERE uuid = #{uuid} AND is_del = false
+    </select>
+
+    <select id="listByDataLineUuid" resultMap="DataPointResultMap">
+        SELECT dp.* FROM data_point dp
+                             LEFT JOIN data_line dl ON dp.data_lineid = dl.id
+        WHERE dl.uuid = #{dataLineUuid} AND dp.is_del = false
+        ORDER BY dp.name ASC
+    </select>
+
+    <update id="updateByUuid">
+        UPDATE data_point
+        <set>
+            <if test="use != null">use = #{use},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="listDataSample != null">list_data_sample = #{listDataSample},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </set>
+        WHERE uuid = #{uuid} AND is_del = false
+    </update>
+
+    <update id="batchDeleteByDataLineUuid">
+        UPDATE data_point SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE data_lineid IN (
+            SELECT id FROM data_line WHERE uuid = #{dataLineUuid} AND is_del = false
+        )
+    </update>
+
+    <update id="deleteByUuid">
+        UPDATE data_point SET is_del = true, update_by = #{updateBy}, update_time = NOW()
+        WHERE uuid = #{uuid}
+    </update>
+</mapper>

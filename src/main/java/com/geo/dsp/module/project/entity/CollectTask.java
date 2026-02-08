@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 /**
  * 采集任务表实体
- * 对应表：geo_dsp_collection_task
+ * 对应表：collect_task
  */
 @Data
-@TableName("geo_dsp_collection_task")
+@TableName("collect_task")
 public class CollectTask {
 
     @TableId(type = IdType.AUTO)

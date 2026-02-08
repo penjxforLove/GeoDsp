@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 
 /**
  * 任务审核表实体
- * 对应表：geo_dsp_task_audit
+ * 对应表：task_audit
  */
 @Data
-@TableName("geo_dsp_task_audit")
+@TableName("task_audit")
 public class TaskAudit {
 
     @TableId(type = IdType.AUTO)
